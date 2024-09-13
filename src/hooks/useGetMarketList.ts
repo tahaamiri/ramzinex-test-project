@@ -11,10 +11,7 @@ const useGetMarketList = () => {
         getMarketList();
         const intervalId = setInterval(() => getMarketList(), 20000);
 
-        return () => {
-            console.log('RETURN');
-            clearInterval(intervalId);
-        }
+        return () => clearInterval(intervalId)
     }, [])
 
     const getMarketList = () => {
