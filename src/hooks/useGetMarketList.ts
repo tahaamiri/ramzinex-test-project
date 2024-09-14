@@ -14,13 +14,9 @@ const useGetMarketList = () => {
         return () => clearInterval(intervalId)
     }, [])
 
-    const getMarketList = () => {
-        get(API.marketList)
-            .then((response) => {
-                dispatch(setMarketList(response.data));
-            }).catch((error) => {
-                console.log(error)
-            })
+    const getMarketList = async () => {
+        const marketList = await get(API.marketList);
+        dispatch(setMarketList(marketList));
     }
 }
 

@@ -1,9 +1,9 @@
 import darkModeIcon from '../assets/svg/dark_mode_.svg';
-import useToogleDarkMode from '../hooks/useToogleDarkMode';
+import useToggleDarkMode from '../hooks/useToggleDarkMode';
 
 const DarkModeToggle = () => {
 
-    const {isDarkMode, setIsDarkMode} = useToogleDarkMode();
+    const {isDarkMode, setIsDarkMode} = useToggleDarkMode();
 
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);

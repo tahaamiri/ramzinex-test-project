@@ -3,7 +3,7 @@ import { DarkMode } from "../utils/enums";
 
 
 
-const useToogleDarkMode = (mode?: DarkMode) => {
+const useToggleDarkMode = (mode?: DarkMode) => {
 
     const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('theme') === DarkMode.DARK);
 
@@ -26,4 +26,4 @@ const useToogleDarkMode = (mode?: DarkMode) => {
     return { isDarkMode,  setIsDarkMode }
 }
 
-export default useToogleDarkMode
+export default useToggleDarkMode

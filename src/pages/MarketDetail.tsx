@@ -5,6 +5,7 @@ import { RootState } from "../redux/store";
 import { PATH } from "../utils/path";
 import MarketDetailSkeleton from "../components/marketDetail/MarketDetailSkeleton";
 import MarketDetailRow from "../components/marketDetail/MarketDetailRow";
+import { priceRegexCheck } from "../utils/helper";
 
 const MarketDetail = () => {
     const { url } = useParams();
@@ -31,7 +32,7 @@ const MarketDetail = () => {
                             <MarketDetailRow label="نام انگلیسی" value={marketInformation.base_currency_symbol.en} />
                             <MarketDetailRow
                                 label="قیمت"
-                                value={`${marketInformation.sell.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} IRR`}
+                                value={`${priceRegexCheck(marketInformation.sell)} IRR`}
                             />
                             <MarketDetailRow
                                 label="تغییرات 24 ساعته"
@@ -39,7 +40,7 @@ const MarketDetail = () => {
                             />
                             <MarketDetailRow
                                 label="حجم معاملاتی"
-                                value={`${marketInformation.financial.last24h.quote_volume.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} IRR`}
+                                value={`${priceRegexCheck(marketInformation.financial.last24h.quote_volume)} IRR`}
                             />
                         </div>
                         <button

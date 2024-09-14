@@ -1,10 +1,10 @@
 import useGetMarketList from "./hooks/useGetMarketList"
-import useToogleDarkMode from "./hooks/useToogleDarkMode";
+import useToggleDarkMode from "./hooks/useToggleDarkMode";
 import Router from "./Router"
 
 function App() {
 
-    useToogleDarkMode();
+    useToggleDarkMode();
     useGetMarketList();
 
     return (

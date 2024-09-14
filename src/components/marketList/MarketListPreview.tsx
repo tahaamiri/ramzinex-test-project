@@ -1,3 +1,4 @@
+import { CSSProperties } from "react";
 import { Pairs } from "../../utils/types"
 import MarketItem from "./MarketItem";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -11,7 +12,7 @@ const ITEM_HEIGHT = 45;
 
 const MarketListPreview = (props: MarketListPreviewProps) => {
 
-    const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
+    const Row = ({ index, style }: { index: number; style: CSSProperties }) => {
         const item = props.list[index];
         return (
             <div style={style}>

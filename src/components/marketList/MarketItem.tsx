@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Pairs } from "../../utils/types";
 import { PATH } from "../../utils/path";
+import { priceRegexCheck } from "../../utils/helper";
 
 
 type Props = {
@@ -11,7 +12,6 @@ const MarketItem = (props: Props) => {
 
     const { item } = props;
     const navigate = useNavigate();
-
 
     return (
         <div
@@ -26,7 +26,7 @@ const MarketItem = (props: Props) => {
                 </span>
             </div>
             <span className='shrink-0 text-[#41474F] dark:text-[#E4E5E6] text-sm font-normal' dir="ltr">
-                {`${item.sell.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} IRR`}
+                {`${priceRegexCheck(item.sell)} IRR`}
             </span>
         </div>
     )

@@ -4,15 +4,20 @@ import MarketItemSkeleton from '../components/marketList/MarketItemSkeleton';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import MarketListPreview from '../components/marketList/MarketListPreview';
-import HeaderControls from '../components/marketList/HeaderControls';
-import ArrowIcon from '../assets/svg/ArrowIcon';
+import { useSearchParams } from 'react-router-dom';
+import SearchInput from '../components/marketList/SearchInput';
+import DarkModeToggle from '../components/DarkModeToggle';
+import SortableColumn from '../components/marketList/SortableColumn';
 
 const MarketList = () => {
+
     const marketList = useSelector((state: RootState) => state.market.list);
     const [filteredMarket, setFilteredMarket] = useState<Pairs[]>();
-    const [searchQuery, setSearchQuery] = useState<string>('');
-    const [nameSortOrder, setNameSortOrder] = useState<SortOrderType>(null);
-    const [priceSortOrder, setPriceSortOrder] = useState<SortOrderType>(null);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchQuery, setSearchQuery] = useState<string | undefined>(searchParams.get('searchQuery') || undefined);
+    const [nameSortOrder, setNameSortOrder] = useState<SortOrderType | undefined>(searchParams.get('sortByName') as SortOrderType || undefined);
+    const [priceSortOrder, setPriceSortOrder] = useState<SortOrderType | undefined>(searchParams.get('sortByPrice') as SortOrderType || undefined);
+
 
     const applySort = useCallback((list: Pairs[]) => {
         let sortedList = [...list];
@@ -32,19 +37,27 @@ const MarketList = () => {
         return sortedList;
     }, [nameSortOrder, priceSortOrder]);
 
-    const handleMarketSearch = (searchValue: string) => setSearchQuery(searchValue);
+    const handleMarketSearch = useCallback((searchValue: string) => {
+        setSearchQuery(searchValue);
+    }, []);
 
     useEffect(() => {
         if (!marketList) return;
 
-        let filteredList = marketList.filter((market) =>
-            market.base_currency_symbol.en.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        let filteredList = marketList;
+        if (searchQuery) {
+            filteredList = marketList.filter((market) =>
+                market.base_currency_symbol.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                market.base_currency_symbol.fa.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
 
         filteredList = applySort(filteredList);
 
         setFilteredMarket(filteredList);
-    }, [marketList, searchQuery, applySort]);
+        paramsHandler(searchQuery, nameSortOrder, priceSortOrder);
+
+    }, [marketList, searchQuery, priceSortOrder, nameSortOrder, applySort]);
 
     const handleSortMarketList = (key: 'name' | 'price') => {
         let sortOrder: SortOrderType;
@@ -52,33 +65,54 @@ const MarketList = () => {
         if (key === 'name') {
             sortOrder = nameSortOrder === 'Ascending' ? 'Descending' : 'Ascending';
             setNameSortOrder(sortOrder);
-            setPriceSortOrder(null);
+            setPriceSortOrder(undefined);
         } else if (key === 'price') {
             sortOrder = priceSortOrder === 'Ascending' ? 'Descending' : 'Ascending';
             setPriceSortOrder(sortOrder);
-            setNameSortOrder(null);
+            setNameSortOrder(undefined);
         }
     };
 
+    const paramsHandler = (searchQuery?: string, nameSort?: SortOrderType, priceSort?: SortOrderType) => {
+
+        const params: [string, string | undefined][] = [
+            ['searchQuery', searchQuery],
+            ['sortByName', nameSort],
+            ['sortByPrice', priceSort],
+        ];
+
+        params.forEach(([key, value]) => {
+            if (value) {
+                searchParams.set(key, value);
+            } else {
+                searchParams.delete(key);
+            }
+        });
+
+        setSearchParams(searchParams);
+    }
+
     return (
         <div className="min-h-screen flex flex-col p-2 bg-white dark:bg-[#181818]">
-            <HeaderControls onSearch={handleMarketSearch} />
+            <div className="flex items-center gap-2">
+                <SearchInput
+                    value={searchQuery}
+                    onSearch={handleMarketSearch}
+                />
+                <DarkModeToggle />
+            </div>
             <div className="flex-1 flex flex-col px-2 mt-2">
                 <div className="flex items-center justify-between">
-                    <div className='flex items-center gap-5 cursor-pointer' onClick={() => handleSortMarketList('name')}>
-                        <span className='text-[#8F9398] text-xs font-medium'>نام</span>
-                        <div className='flex flex-col gap-1'>
-                            <ArrowIcon className={`${nameSortOrder === 'Ascending' ? "fill-orange-500" : "fill-[#E0E0E0] "}`} />
-                            <ArrowIcon className={`${nameSortOrder === 'Descending' ? "fill-orange-500" : "fill-[#E0E0E0]"} rotate-180`} />
-                        </div>
-                    </div>
-                    <div className='flex items-center gap-5 cursor-pointer' onClick={() => handleSortMarketList('price')}>
-                        <span className='text-[#8F9398] text-xs font-medium'>آخرین قیمت</span>
-                        <div className='flex flex-col gap-1'>
-                            <ArrowIcon className={`${priceSortOrder === 'Ascending' ? "fill-orange-500" : "fill-[#E0E0E0] "}`} />
-                            <ArrowIcon className={`${priceSortOrder === 'Descending' ? "fill-orange-500" : "fill-[#E0E0E0]"} rotate-180`} />
-                        </div>
-                    </div>
+                    <SortableColumn
+                        label="نام"
+                        sortOrder={nameSortOrder}
+                        onSort={() => handleSortMarketList('name')}
+                    />
+                    <SortableColumn
+                        label="آخرین قیمت"
+                        sortOrder={priceSortOrder}
+                        onSort={() => handleSortMarketList('price')}
+                    />
                 </div>
                 <div className='flex flex-1 h-full w-full'>
                     {filteredMarket === undefined
@@ -89,5 +123,6 @@ const MarketList = () => {
         </div>
     );
 };
+
 
 export default MarketList;

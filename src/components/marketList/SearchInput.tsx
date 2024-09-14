@@ -1,24 +1,20 @@
 import useDebounce from '../../hooks/useDebounce';
 import searchIcon from '../../assets/svg/search.svg';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, memo, useEffect, useState } from 'react';
 
 type SearchInputProps = {
+    value?: string;
     onSearch: (value: string) => void;
 }
 
 const SearchInput = (props: SearchInputProps) => {
 
-    const [searchVal, setSearchVal] = useState("");
-    const [debounceVal, setDebounceVal] = useState("");
+    const [searchVal, setSearchVal] = useState<string | undefined>(props.value);
     const debounceValue = useDebounce(searchVal);
 
     useEffect(() => {
-        setDebounceVal(debounceValue);
+        debounceValue !== undefined && props.onSearch(debounceValue);
     }, [debounceValue])
-
-    useEffect(() => {
-        props.onSearch(debounceValue);
-    }, [debounceVal])
 
     const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchVal(e.target.value);
@@ -29,6 +25,7 @@ const SearchInput = (props: SearchInputProps) => {
             <img src={searchIcon} alt="search icon" width={16} height={16} />
             <input
                 type="text"
+                value={searchVal}
                 className='w-full outline-none placeholder:text-xs placeholder:text-[#BCBEC1] placeholder:font-normal text-[#41474F] dark:text-[#E4E5E6] bg-transparent'
                 placeholder='جستجوی بازار'
                 onChange={handleSearchInputChange}
@@ -37,4 +34,4 @@ const SearchInput = (props: SearchInputProps) => {
     )
 }
 
-export default SearchInput
+export default memo(SearchInput);

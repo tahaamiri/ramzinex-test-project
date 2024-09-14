@@ -20,4 +20,4 @@ export type Pairs = {
     url_name: string;
 }
 
-export type SortOrderType = 'Ascending' | 'Descending' | null;
+export type SortOrderType = 'Ascending' | 'Descending';
