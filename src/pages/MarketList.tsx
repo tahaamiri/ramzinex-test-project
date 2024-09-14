@@ -9,7 +9,7 @@ import ArrowIcon from '../assets/svg/ArrowIcon';
 
 const MarketList = () => {
     const marketList = useSelector((state: RootState) => state.market.list);
-    const [filteredMarket, setFilteredMarket] = useState<Pairs[]>(marketList || []);
+    const [filteredMarket, setFilteredMarket] = useState<Pairs[]>();
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [nameSortOrder, setNameSortOrder] = useState<SortOrderType>(null);
     const [priceSortOrder, setPriceSortOrder] = useState<SortOrderType>(null);
@@ -81,7 +81,7 @@ const MarketList = () => {
                     </div>
                 </div>
                 <div className='flex flex-1 h-full w-full'>
-                    {!filteredMarket || filteredMarket.length === 0
+                    {filteredMarket === undefined
                         ? <MarketItemSkeleton />
                         : <MarketListPreview list={filteredMarket} />}
                 </div>
