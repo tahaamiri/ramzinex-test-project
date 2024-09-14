@@ -5,13 +5,12 @@ export const API = {
     currencies: `${baseUrl}/api/v1.0/exchange/currencies`,
 }
 
-export const get = async (url: string, options = {}) => {
+export const get = async (url: string) => {
     const response = await fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
-        ...options,
     });
 
     if (!response.ok) {
